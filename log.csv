@@ -1,0 +1,45 @@
+//TODO: switch day and month right now its month/day/year
+11/13/2023, 15:11:56, 192.168.200.174, hotfix/upload-logo-match-env, Success, , 3m26.436s
+11/14/2023, 11:59:14, 192.168.200.143, story/cherry-picking-the-missing-match-rp-changes-ah, Success, , 3m41.190s
+11/14/2023, 12:20:46, 192.168.200.143, story/cherry-picking-the-missing-match-rp-changes-ah, Success, , 3m28.904s
+11/15/2023, 15:28:43, 192.168.200.143, bug/remove-job-post-modal-footer-for-rp-users-ah, Success, , 3m27.548s
+11/16/2023, 10:33:44, 192.168.200.143, bug/fixing-rp-edit-access-on-partner-companies-ah, Success, , 5m23.841s
+11/17/2023, 12:49:55, 192.168.200.233, story/fix-profile-rp-overview, Success, , 3m37.089s
+11/21/2023, 11:27:06, 192.168.200.143, bug/fixing-save-as-recruitment-on-recruitment-overview-ah, Success, , 3m50.000s
+11/22/2023, 09:18:50, 192.168.200.143, bug/fixing-the-recruitment-single-view-for-partners-ah, Success, , 4m4.233s
+11/27/2023, 11:11:11, 10.212.134.2, bug/fixing-lang-keys-in-recruitment-activity-log-tab-ah, Success, , 4m7.279s
+11/28/2023, 12:33:22, 10.212.134.1, bug/fixing-the-add-candidate-to-company-board-ah, Success, , 3m53.707s
+11/28/2023, 17:06:06, 10.212.134.3, bug/job-post-video-fix, Success, , 3m58.253s
+11/29/2023, 10:03:42, 10.212.134.2, hotfix/fixing-match-remote-preference-keys-ah, Success, , 4m2.020s
+11/29/2023, 14:53:35, 10.212.134.2, bug/fixing-rp-navigation-to-job-post-ah_866b1ke3m, Success, , 4m6.960s
+12/01/2023, 10:18:55, 192.168.200.236, bug/match-bugs-amalgamation, Success, , 4m14.397s
+12/01/2023, 13:06:57, 192.168.200.143, story/merge-main-01-12-2023, Success, No Changes, 3m50.077s
+12/05/2023, 10:42:32, 10.212.134.3, bug/fixing-the-add-candidate-to-company-board-ah, Success, , 4m4.200s
+12/05/2023, 13:32:36, 10.212.134.3, story/merge-main-into-feature-match-v2-05-12-23, Success, , 4m14.411s
+12/05/2023, 14:35:27, 10.212.134.2, story/expanding-activity-log, Success, , 4m9.606s
+12/05/2023, 15:26:54, 10.212.134.3, bug/show-company-is-public, Success, , 4m13.387s
+12/06/2023, 13:42:38, 10.212.134.3, bug/fixing-localization-in-recruitment-partner-modules-ah, Success, , 4m2.554s
+12/06/2023, 13:45:58, 10.212.134.3, bug/match-bugs-amalgamation, Fail, Command failed: cd platform && git fetch && git checkout bug/match-bugs-amalgamation && git pull origin bug/match-bugs-amalgamation Switched to branch 'bug/match-bugs-amalgamation' From github.com:Can, 4m2.554s
+12/06/2023, 15:23:58, 10.212.134.1, story/merge-main-into-feature-match-v2-06-12-23, Success, , 3m56.580s
+12/06/2023, 15:30:19, 10.212.134.2, bug/fixing-localization-in-recruitment-partner-modules-ah, Success, , 4m4.755s
+12/06/2023, 15:33:30, 10.212.134.2, bug/match-bugs-amalgamation, Fail, Command failed: cd platform && git fetch && git checkout bug/match-bugs-amalgamation && git pull origin bug/match-bugs-amalgamation From github.com:Candeno/platform    e67605394..673956e7e  bug/match-, 4m4.755s12/08/2023, 11:34:34, 10.212.134.1, story/activity-log-final-kk, Success, , 4m32.755s
+12/08/2023, 12:06:10, 10.212.134.2, story/mergin-main-into-feature-match-v2-08-12-23, Success, , 4m11.994s
+12/08/2023, 12:50:04, 10.212.134.2, story/updating-match-job-post-employment-form-ah_866b27h1v, Success, , 4m23.678s
+12/08/2023, 13:00:00, 10.212.134.2, story/updating-match-job-post-employment-form-ah_866b27h1v, Success, , 4m16.292s
+12/08/2023, 14:21:09, 10.212.134.1, story/fixing-opened-status-RP, Success, , 4m32.909s
+12/11/2023, 11:32:02, 10.212.134.2, release/more-rp-fixes-bundle, Success, , 4m31.970s
+12/11/2023, 11:42:22, 10.212.134.2, bug/more-ui-fixes-ai, Success, , 4m4.597s
+12/11/2023, 14:58:02, 10.212.134.3, feature/match-v2, Success, No Changes, 4m5.573s
+12/11/2023, 16:05:29, 10.212.134.3, story/fixing-opened-status-RP, Fail, Command failed: cd platform && git fetch && git checkout story/fixing-opened-status-RP && git pull origin story/fixing-opened-status-RP From github.com:Candeno/platform    4a07816ae..4e83c5ce7  featur, 4m5.573s
+12/11/2023, 16:21:50, 10.212.134.4, bug/fixing-the-archive-candidate-logic-ah, Success, , 4m43.660s
+12/12/2023, 10:34:24, 10.212.134.2, bug/fixed-hard-coded-text-ai, Success, , 4m19.182s
+12/12/2023, 15:33:15, 10.212.134.2, bug/slate-menubar-zIndex-ai, Fail, Command failed: cd platform && git fetch && git checkout bug/slate-menubar-zIndex-ai && git pull origin bug/slate-menubar-zIndex-ai From github.com:Candeno/platform    c55f8e30b..ad390a29d  feature/jo, 4m19.182s
+12/12/2023, 16:04:54, 10.212.134.2, bug/slate-menubar-zIndex-ai, Success, , 4m46.391s
+12/13/2023, 11:24:35, 10.212.134.2, bug/missed-lang-key-in-job-post-creation-ah, Success, , 4m12.953s
+12/14/2023, 10:05:09, 10.212.134.3, bug/fixing-aka-issues-13-12-23-ah, Fail, Command failed: cd platform && git fetch && git checkout bug/fixing-aka-issues-13-12-23-ah && git pull origin bug/fixing-aka-issues-13-12-23-ah git@github.com: Permission denied (publickey). fatal: C, 
+12/14/2023, 10:14:21, 10.212.134.3, bug/fixing-aka-issues-13-12-23-ah, Success, , 4m16.316s
+12/15/2023, 11:47:32, 10.212.134.5, bug/fixed-thunk-error-in-recruitment-ah, Success, , 4m30.001s
+12/19/2023, 12:26:50, 10.212.134.1, story/reordering-migrations, Success, , 4m1.330s
+12/19/2023, 12:36:22, 10.212.134.1, feature/match-v2, Success, , 4m11.299s
+12/19/2023, 16:49:39, 10.212.134.3, feature/match-v2, Success, , 4m50.852s
+12/20/2023, 12:27:20, 10.212.134.6, feature/match-v2, Success, , 4m17.182s

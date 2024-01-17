@@ -1,0 +1,159 @@
+const express = require("express");
+const bodyParser = require("body-parser");
+const { exec } = require("child_process");
+const fs = require("fs");
+const path = require("path");
+const app = express();
+const port = 3005;
+const queue = [];
+let isProcessing = false;
+let globalDuration = "";
+const githubRepoUrl = "https://github.com/Candeno/platform";
+
+app.use(bodyParser.text({ type: "*/*" }));
+
+app.post("/", (req, res) => {
+  const branchName = req.body.trim();
+  const clientIp = req.ip;
+  queue.push({ branchName, clientIp, res });
+
+  console.log(`Received request for branch: ${branchName} from ${clientIp}`);
+  if (!isProcessing) {
+    processQueue();
+  }
+});
+
+const processQueue = () => {
+  if (queue.length > 0) {
+    isProcessing = true;
+    const job = queue.shift();
+    const { branchName, clientIp, res } = job;
+
+    console.log(
+      `Starting processing for branch: ${branchName} from ${clientIp}`
+    );
+
+    exec(
+      `cd platform && git fetch && git checkout ${branchName} && git pull origin ${branchName}`,
+      (error, stdout, stderr) => {
+        if (error) {
+          handleError(error, stderr, branchName, clientIp, res);
+          return;
+        }
+
+        console.log(`Running npm run prod for branch: ${branchName}`);
+        exec(
+          "cd platform && npm run prod",
+          (npmError, npmStdout, npmStderr) => {
+            if (npmError) {
+              console.error('npmError:', npmError);
+              console.error('npmStderr:', npmStderr);
+              handleError(npmError, npmStderr, branchName, clientIp, res);
+              return;
+          }
+          
+
+            const durationMatch = npmStdout.match(/real\s+(\d+m\d+\.\d+s)/);
+            globalDuration = durationMatch
+              ? durationMatch[1]
+              : "unknown duration"; // Update global duration
+
+            exec(
+              `cd platform && git add -A && git diff --cached --quiet`,
+              (diffError, diffStdout, diffStderr) => {
+                if (diffError) {
+                  exec(
+                    `cd platform && git commit -m "prod" && git push origin ${branchName}`,
+                    (gitError, gitStdout, gitStderr) => {
+                      if (gitError) {
+                        handleError(
+                          gitError,
+                          gitStderr,
+                          branchName,
+                          clientIp,
+                          res
+                        );
+                        return;
+                      }
+
+                      const successMessage = `Branch ${branchName} processed and changes pushed successfully in ${globalDuration}. View at ${githubRepoUrl}/tree/${branchName}`;
+                      console.log(successMessage);
+                      res.send(successMessage);
+                      logToFile(
+                        new Date(),
+                        clientIp,
+                        branchName,
+                        "Success",
+                        "",
+                        globalDuration
+                      );
+                      isProcessing = false;
+                    }
+                  );
+                } else {
+                  const noChangesMessage = `No changes to commit for branch ${branchName}. Processing completed in ${globalDuration}.`;
+                  console.log(noChangesMessage);
+                  res.send(noChangesMessage);
+                  logToFile(
+                    new Date(),
+                    clientIp,
+                    branchName,
+                    "Success",
+                    "No Changes",
+                    globalDuration
+                  );
+                  isProcessing = false;
+                }
+              }
+            );
+          }
+        );
+      }
+    );
+  } else {
+    isProcessing = false;
+  }
+};
+
+const handleError = (error, stderr, branchName, clientIp, res) => {
+  console.error(`Error: ${error}`);
+  console.error(`Stderr: ${stderr}`);
+  const errorMessage = `Error processing branch ${branchName}: ${error.message}. Duration: ${globalDuration}`;
+  res.send(errorMessage);
+  logToFile(
+    new Date(),
+    clientIp,
+    branchName,
+    "Fail",
+    error.message,
+    globalDuration
+  );
+};
+
+const logToFile = (timestamp, clientIp, branchName, status, note, duration) => {
+  const formattedTimestamp = timestamp.toLocaleString("en-US", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false,
+  });
+
+  const formattedNote = note.split("\n").join(" ").substring(0, 200);
+  const logMessage = `${formattedTimestamp}, ${clientIp}, ${branchName}, ${status}, ${formattedNote}, ${duration}\n`;
+  const logFilePath = path.join(__dirname, "log.csv");
+
+  fs.appendFile(logFilePath, logMessage, (err) => {
+    if (err) {
+      console.error("Error writing to log file:", err);
+    }
+  });
+};
+
+const ip = "0.0.0.0";
+
+app.listen(port, ip, () => {
+  console.log(`Server running on ${ip}:${port}`);
+});
