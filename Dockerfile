@@ -1,36 +1,21 @@
-FROM node:14.21.3
+# Use an official Node runtime as a parent image (Alpine version for minimal size)
+FROM node:current-alpine
 
+# Set the working directory in the container
 WORKDIR /usr/src/app
 
-# Install SSH (if not present)
-RUN apt-get update && apt-get install -y openssh-client
+# Copy package.json and package-lock.json (or yarn.lock)
+COPY package*.json ./
 
-# Prepare SSH directory and config file
-RUN mkdir -p /root/.ssh
-RUN echo "Host github.com\n\tStrictHostKeyChecking no\n\tIdentityFile /root/.ssh/id_ed25519" > /root/.ssh/config
-COPY id_ed25519 /root/.ssh/id_ed25519
-RUN chmod 600 /root/.ssh/id_ed25519
-RUN chmod 600 /root/.ssh/config
-RUN ssh-keyscan github.com >> /root/.ssh/known_hosts
-
-# Set Git user name and email
-RUN git config --global user.email "your_email@example.com"
-RUN git config --global user.name "Your Name"
-
-# Copy the application source
-COPY . .
-
-# Change to the platform directory and install dependencies
-WORKDIR /usr/src/app/platform
+# If package.json or package-lock.json has changed, npm install will be run
 RUN npm install
 
-# Change back to the app directory
-WORKDIR /usr/src/app
+# Bundle app source
+COPY . .
 
-# Copy the entrypoint script
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
-
-ENTRYPOINT ["/entrypoint.sh"]
-
+# Expose the port the app runs on
 EXPOSE 3005
+
+
+# Run server.js when the container launches
+CMD ["node", "server.js"]
