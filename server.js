@@ -5,7 +5,7 @@ const fs = require('fs');
 const crypto = require('crypto');
 
 const app = express();
-app.use(bodyParser.json());
+app.use(bodyParser.text());
 
 const PORT = 3005;
 const IP_ADDRESS = 'custom_IP'; // Replace with your actual IP
@@ -99,7 +99,7 @@ const checkQueue = () => {
 };
 
 app.post('/', (req, res) => {
-  const branch = req.body.branch;
+  const branch = req.body.trim(); // Use body directly as the branch name
   if (!branch) {
     res.status(400).send('Branch name is required');
     return;
@@ -117,3 +117,5 @@ app.post('/', (req, res) => {
 app.listen(PORT, IP_ADDRESS, () => {
   console.log(`Server running on http://${IP_ADDRESS}:${PORT}`);
 });
+
+server.timeout = 15 * 60 * 1000;
