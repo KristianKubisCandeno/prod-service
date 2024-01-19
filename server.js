@@ -5,13 +5,29 @@ const fs = require('fs');
 const crypto = require('crypto');
 
 const app = express();
-app.use(bodyParser.text());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 const PORT = 3005;
-const IP_ADDRESS = 'custom_IP'; // Replace with your actual IP
+const IP_ADDRESS = '10.212.134.3';
+const SSH_KEY_PATH = './id_ed25519';
 
 const queue = [];
 let isProcessing = false;
+
+// Function to start ssh-agent and add key
+const setupSSHAgent = () => {
+  try {
+    // Start ssh-agent in the background
+    const sshAgentOutput = execSync('eval $(ssh-agent -s)', { stdio: 'pipe' }).toString();
+    console.log(sshAgentOutput);
+
+    // Add the SSH key
+    execSync(`ssh-add ${SSH_KEY_PATH}`, { stdio: 'pipe' });
+    console.log('SSH key added to the agent.');
+  } catch (error) {
+    console.error('Failed to setup SSH agent:', error);
+  }
+};
 
 const generateRandomId = () => {
   return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
@@ -98,8 +114,10 @@ const checkQueue = () => {
   }
 };
 
+setupSSHAgent();
+
 app.post('/', (req, res) => {
-  const branch = req.body.trim(); // Use body directly as the branch name
+  const branch = req.body.branch; // Access the branch directly without trim
   if (!branch) {
     res.status(400).send('Branch name is required');
     return;
@@ -118,4 +136,4 @@ app.listen(PORT, IP_ADDRESS, () => {
   console.log(`Server running on http://${IP_ADDRESS}:${PORT}`);
 });
 
-server.timeout = 15 * 60 * 1000;
+app.timeout = 15 * 60 * 1000;
