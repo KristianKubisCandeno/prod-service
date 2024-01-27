@@ -5,10 +5,10 @@ const fs = require('fs');
 const crypto = require('crypto');
 
 const app = express();
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.text({ type: "*/*" }));
 
 const PORT = 3005;
-const IP_ADDRESS = '10.212.134.3';
+const IP_ADDRESS = '192.168.1.62';
 const SSH_KEY_PATH = './id_ed25519';
 
 const queue = [];
@@ -50,7 +50,7 @@ if (fs.existsSync(cacheFilePath)) {
   cache = JSON.parse(fs.readFileSync(cacheFilePath));
 }
 
-const processDeployment = (branch, randomId, res) => {
+const processDeployment = (branch, randomId, req, res) => {
   const startTime = new Date();
   console.log(`Starting deployment on branch: ${branch} with ID: ${randomId}`);
 
@@ -108,7 +108,7 @@ const checkQueue = () => {
   if (queue.length > 0) {
     const nextTask = queue.shift();
     isProcessing = true;
-    processDeployment(nextTask.branch, nextTask.randomId, nextTask.res);
+    processDeployment(nextTask.branch, nextTask.randomId, nextTask.req, nextTask.res);
   } else {
     isProcessing = false;
   }
@@ -117,18 +117,19 @@ const checkQueue = () => {
 setupSSHAgent();
 
 app.post('/', (req, res) => {
-  const branch = req.body.branch; // Access the branch directly without trim
+  const branch = req.body.trim(); // Trim the branch name from the body
+  const clientIp = req.ip;
+
   if (!branch) {
     res.status(400).send('Branch name is required');
     return;
   }
 
-  const randomId = generateRandomId();
-  if (isProcessing) {
-    queue.push({ branch, randomId, res });
-  } else {
-    isProcessing = true;
-    processDeployment(branch, randomId, res);
+  queue.push({ branch, randomId: generateRandomId(), req, res });
+  console.log(`Received request for branch: ${branch} from ${req.ip}`);
+
+  if (!isProcessing) {
+    checkQueue();
   }
 });
 
