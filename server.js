@@ -8,26 +8,10 @@ const app = express();
 app.use(bodyParser.text({ type: "*/*" }));
 
 const PORT = 3005;
-const IP_ADDRESS = '192.168.1.62';
-const SSH_KEY_PATH = './id_ed25519';
+const IP_ADDRESS = '0.0.0.0';
 
 const queue = [];
 let isProcessing = false;
-
-// Function to start ssh-agent and add key
-const setupSSHAgent = () => {
-  try {
-    // Start ssh-agent in the background
-    const sshAgentOutput = execSync('eval $(ssh-agent -s)', { stdio: 'pipe' }).toString();
-    console.log(sshAgentOutput);
-
-    // Add the SSH key
-    execSync(`ssh-add ${SSH_KEY_PATH}`, { stdio: 'pipe' });
-    console.log('SSH key added to the agent.');
-  } catch (error) {
-    console.error('Failed to setup SSH agent:', error);
-  }
-};
 
 const generateRandomId = () => {
   return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
@@ -63,16 +47,10 @@ const processDeployment = (branch, randomId, req, res) => {
 
     // Check for changes in package.json and composer.json
     const npmHash = getFileHash('package.json');
-    const composerHash = getFileHash('composer.json');
-
+    
     if (npmHash !== cache.npmHash) {
       execSync('npm install');
       cache.npmHash = npmHash;
-    }
-
-    if (composerHash && composerHash !== cache.composerHash) {
-      execSync('composer install');
-      cache.composerHash = composerHash;
     }
 
     fs.writeFileSync(cacheFilePath, JSON.stringify(cache));
@@ -114,11 +92,9 @@ const checkQueue = () => {
   }
 };
 
-setupSSHAgent();
 
 app.post('/', (req, res) => {
   const branch = req.body.trim(); // Trim the branch name from the body
-  const clientIp = req.ip;
 
   if (!branch) {
     res.status(400).send('Branch name is required');
